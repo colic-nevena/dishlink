@@ -13,7 +13,7 @@ Where every cook, from seasoned chefs to passionate home cooks, can come togethe
 
    ```bash
    cd mobile
-   npx expo start
+   npm install
    ```
 
 2. Start the app
