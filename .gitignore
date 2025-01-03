@@ -1,0 +1,62 @@
+# === Backend ===
+backend/dist
+backend/coverage
+backend/.env
+backend/node_modules
+backend/logs/
+backend/*.log
+backend/*.tmp
+backend/*.temp
+
+# === Mobile App ===
+mobile/node_modules
+
+# Expo
+mobile/.expo/
+mobile/dist/
+mobile/web-build/
+mobile/expo-env.d.ts
+
+# Native Build Files
+mobile/*.orig.*
+mobile/*.jks
+mobile/*.p8
+mobile/*.p12
+mobile/*.key
+mobile/*.mobileprovision
+
+# Metro Bundler
+mobile/.metro-health-check*
+
+# Debug Logs
+mobile/npm-debug.*
+mobile/yarn-debug.*
+mobile/yarn-error.*
+
+# macOS
+mobile/.DS_Store
+mobile/*.pem
+
+# Local Environment
+mobile/.env*.local
+
+# TypeScript
+mobile/*.tsbuildinfo
+
+# === General (Applies to Both) ===
+*.tmp
+*.temp
+
+# Logs
+logs/
+*.log
+
+# IDE/Editor Files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS-Specific Files
+.DS_Store
+Thumbs.db
