@@ -10,6 +10,7 @@ backend/*.temp
 
 # === Mobile App ===
 mobile/node_modules
+mobile/.env
 
 # Expo
 mobile/.expo/

@@ -1,5 +1,11 @@
-import React, { useState } from "react"
-import { StyleSheet, ImageBackground, SafeAreaView, View, Image, Alert } from 'react-native';
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  ImageBackground,
+  SafeAreaView,
+  View,
+  Image,
+} from "react-native";
 import AppTextInput from "@/components/AppTextInput";
 import AppButton from "@/components/AppButton";
 
@@ -7,24 +13,22 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = () => {
-      if (email && password) {
-        Alert.alert("Success", `Email: ${email}\nPassword: ${password}`);
-      } else {
-        Alert.alert("Error", "Please fill in both fields.");
-      }
-  };
+  const handleSubmit = () => {};
 
   return (
-    <ImageBackground style={styles.background} source={require("../../assets/images/authScreen.png")}>
+    <ImageBackground
+      style={styles.background}
+      source={require("../../assets/images/authScreen.png")}
+    >
       <SafeAreaView style={styles.container}>
-
         <View style={styles.logoContainer}>
-          <Image source={require("../../assets/images/logo.png")} style={styles.logo} />
+          <Image
+            source={require("../../assets/images/logo.png")}
+            style={styles.logo}
+          />
         </View>
 
         <View style={styles.formContainer}>
-
           <AppTextInput
             icon="email"
             placeholder="Email"
@@ -55,10 +59,9 @@ export default function LoginScreen() {
             value={password}
           />
 
-            <View style={styles.button}>
-              <AppButton title="Login" onPress={handleSubmit} />
-            </View>
-
+          <View style={styles.button}>
+            <AppButton title="Login" onPress={handleSubmit} />
+          </View>
         </View>
       </SafeAreaView>
     </ImageBackground>
@@ -94,5 +97,5 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 20,
     width: "100%",
-  }
+  },
 });
