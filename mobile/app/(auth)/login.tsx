@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   ImageBackground,
@@ -8,12 +8,53 @@ import {
 } from "react-native";
 import AppTextInput from "@/components/AppTextInput";
 import AppButton from "@/components/AppButton";
+import {
+  GoogleSigninButton,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+import * as SecureStore from "expo-secure-store";
+import { GoogleSignin, configureGoogleSignIn } from "../../googleSignInConfig";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = () => {};
+  useEffect(() => {
+    configureGoogleSignIn();
+  }, []);
+
+  const storeToken = async (token: string) => {
+    try {
+      await SecureStore.setItemAsync("userToken", token);
+    } catch (error) {
+      console.error("Error storing token:", error);
+    }
+  };
+
+  const handleSubmit = () => {
+    console.log("POZVAN LOGIN SUBMIT");
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+
+      if (userInfo.data && userInfo.data.idToken) {
+        await storeToken(userInfo.data.idToken);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  /**
+   const signOut = async () => {
+    GoogleSignin.revokeAccess();
+    GoogleSignin.signOut();
+    router.replace("/authentication");
+  };
+*/
 
   return (
     <ImageBackground
@@ -62,6 +103,14 @@ export default function LoginScreen() {
           <View style={styles.button}>
             <AppButton title="Login" onPress={handleSubmit} />
           </View>
+
+          <View style={styles.googleButton}>
+            <GoogleSigninButton
+              size={GoogleSigninButton.Size.Icon}
+              color={GoogleSigninButton.Color.Light}
+              onPress={handleGoogleSignIn}
+            />
+          </View>
         </View>
       </SafeAreaView>
     </ImageBackground>
@@ -97,5 +146,9 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 20,
     width: "100%",
+  },
+  googleButton: {
+    marginTop: 20,
+    alignItems: "center",
   },
 });

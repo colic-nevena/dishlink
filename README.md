@@ -6,24 +6,25 @@ Where every cook, from seasoned chefs to passionate home cooks, can come togethe
 
 1. Install dependencies in both backend and mobile
 
-   ```bash
-   cd backend
-   npm install
-   ```
+```bash
+cd backend
+npm install
+```
 
-   ```bash
-   cd mobile
-   npm install
-   ```
+```bash
+cd mobile
+npm install
+```
 
-2. Start the app
+2. Build and start the app
 
-   ```bash
-   cd backend
-   npm start
-   ```
+```bash
+cd backend
+npm start
+```
 
-   ```bash
-   cd mobile
-   npx expo start
-   ```
+```bash
+cd mobile
+eas build --profile development --platform android
+npx expo start
+```

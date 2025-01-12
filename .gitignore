@@ -9,6 +9,9 @@ backend/*.tmp
 backend/*.temp
 
 # === Mobile App ===
+/android
+/ios
+
 mobile/node_modules
 mobile/.env
 

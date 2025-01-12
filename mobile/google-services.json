@@ -1,0 +1,43 @@
+{
+  "project_info": {
+    "project_number": "705535325422",
+    "project_id": "dishlink-94aaf",
+    "storage_bucket": "dishlink-94aaf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705535325422:android:7b27eecbc3fff1051fafff",
+        "android_client_info": {
+          "package_name": "com.nevena.colic1810.dishlink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "705535325422-tq88m5jf7unporcnh6jugnsmh4khlo56.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nevena.colic1810.dishlink",
+            "certificate_hash": "00a04ab2bad67822078efbac2b0c7d73b936fdc4"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9SioDVtaSEXeg3LszzIcXctG6Zi9mjNY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "705535325422-c55dn109crls869qjikmilo1p01rckgq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
