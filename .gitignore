@@ -10,7 +10,6 @@ backend/*.temp
 
 # === Mobile App ===
 mobile/android
-mobile/ios
 
 mobile/google-services.json
 
