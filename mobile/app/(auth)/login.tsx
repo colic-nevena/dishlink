@@ -125,23 +125,22 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginTop: "20%",
     width: "100%",
     alignItems: "center",
   },
   logoContainer: {
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 30,
+    marginTop: "10%",
+    marginBottom: "5%",
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: 220,
+    height: 200,
   },
   formContainer: {
     width: "80%",
     maxWidth: 400,
-    marginTop: 15,
   },
   button: {
     marginTop: 20,
