@@ -11,17 +11,17 @@ export default class ChangeUserRole implements Command {
     constructor(
         private readonly _request: ChangeUserRoleRequest,
         private readonly _context: ContextContainer
-    ) {}
+    ) { }
 
     async execute(): Promise<void> {
         const { userId, newRole } = this._request;
 
-        const user = await this._context.userManager.getUser(userId);
-        
+        const user = await this._context.userContext.getUser(userId);
+
         user.changeRole(Role.fromString(newRole));
 
         if (user.hasChanged.role) {
-            await this._context.userManager.changeUserRole(userId, Role.fromString(newRole));
+            await this._context.userContext.changeUserRole(userId, Role.fromString(newRole));
         }
     }
 }

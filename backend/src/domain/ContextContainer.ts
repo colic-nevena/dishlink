@@ -1,16 +1,16 @@
-import IUserRepository from "./user/IUserRepository";
-import UserManager from "./user/UserContext";
+import IUserRepository from "../persistance/repositories/user/IUserRepository";
+import UserContext from "./user/UserContext";
 
 export default class ContextContainer {
-    private readonly _userManager: UserManager
+    private readonly _userContext: UserContext
 
     constructor(
         private readonly userRepository: IUserRepository,
     ) {
-        this._userManager = new UserManager(userRepository)
+        this._userContext = new UserContext(userRepository)
     }
 
-    get userManager(): UserManager {
-        return this._userManager
+    get userContext(): UserContext {
+        return this._userContext
     }
 }

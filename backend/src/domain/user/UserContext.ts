@@ -1,6 +1,6 @@
 
 import UUID from "../../app/helper/Uuid";
-import IUserRepository from "./IUserRepository";
+import IUserRepository from "../../persistance/repositories/user/IUserRepository";
 import Role from "./Role";
 import User, { UserDTO } from "./User";
 
@@ -28,7 +28,7 @@ export default class UserContext {
 
             user.changeName(newName)
 
-            if (user.hasChanged.name) { 
+            if (user.hasChanged.name) {
                 await this._userRepository.save(user)
             }
         } catch (error) {

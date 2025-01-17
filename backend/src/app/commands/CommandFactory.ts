@@ -1,12 +1,12 @@
 import ContextContainer from "../../domain/ContextContainer";
 import ChangeUserRole, { ChangeUserRoleRequest } from "./ChangeUserRole";
 
-export default class Commands {
+export default class CommandFactory {
     constructor(
         private readonly _context: ContextContainer
     ) { }
 
-    public changeUserRole(request: ChangeUserRoleRequest) {
-        return new ChangeUserRole(request, this._context)
+    public getChangeUserRoleCommand(request: ChangeUserRoleRequest): ChangeUserRole {
+        return new ChangeUserRole(request, this._context);
     }
 }

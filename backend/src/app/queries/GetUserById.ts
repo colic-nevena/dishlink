@@ -1,4 +1,4 @@
-import IUserRepository from "../../domain/user/IUserRepository";
+import IUserRepository from "../../persistance/repositories/user/IUserRepository";
 import Query from "./Query";
 
 export type GetUserByIdRequest = {
@@ -11,11 +11,11 @@ export type GetUserByIdResponse = {
     email: string
 }
 
-export default class GetUserById implements Query<GetUserByIdResponse>{
+export default class GetUserById implements Query<GetUserByIdResponse> {
     constructor(
         private readonly _request: GetUserByIdRequest,
         private readonly _userRepo: IUserRepository
-    ) {}
+    ) { }
 
     async execute(): Promise<GetUserByIdResponse> {
         const user = await this._userRepo.find(this._request.id)
