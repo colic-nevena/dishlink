@@ -1,5 +1,5 @@
 export default class AuthController {
-    constructor() {}
+    constructor() { }
 
     async login(req: any, res: any) {
         res.send('loginnnnn')
@@ -7,5 +7,9 @@ export default class AuthController {
 
     async logout(req: any, res: any) {
         res.send('logoutttttt')
+    }
+
+    async register(req: any, res: any) {
+        res.send('registeer')
     }
 }
