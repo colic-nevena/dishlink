@@ -2,6 +2,8 @@ import { Router } from "express";
 import asyncHandler from 'express-async-handler';
 import { ApiRouter } from "../Api";
 import AuthController from "../../controller/AuthController";
+import validateRequestBody from "../middleware/validateRequestBody";
+import { loginSchema, registerSchema } from "../schemas/authSchema";
 
 export default class AuthRouter implements ApiRouter {
     public readonly path = "/auth"
@@ -10,8 +12,10 @@ export default class AuthRouter implements ApiRouter {
 
     get router(): Router {
         return Router()
-            .post('/login', asyncHandler(async (req, res) => this._controller.login(req, res)))
-            .post('/register', asyncHandler(async (req, res) => this._controller.register(req, res)))
-            .post('/logout', asyncHandler(async (req, res) => this._controller.logout(req, res)))
+            .post(
+                '/register',
+                validateRequestBody(registerSchema),
+                asyncHandler(async (req, res) => this._controller.register(req, res))
+            )
     }
 }

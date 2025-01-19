@@ -1,15 +1,12 @@
+import IAuthService from "../service/IAuthService"
+
 export default class AuthController {
-    constructor() { }
-
-    async login(req: any, res: any) {
-        res.send('loginnnnn')
-    }
-
-    async logout(req: any, res: any) {
-        res.send('logoutttttt')
-    }
+    constructor(
+        private readonly _authService: IAuthService
+    ) { }
 
     async register(req: any, res: any) {
-        res.send('registeer')
+        await this._authService.register(req.body.fullName, req.body.email, req.body.password)
+        res.send()
     }
 }

@@ -2,3 +2,4 @@ node_modules
 dist
 coverage
 .env
+firebase-service-account-key.json

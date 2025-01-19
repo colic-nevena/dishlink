@@ -1,16 +1,18 @@
-import Config from "./Config"
-import AuthController from "./controller/AuthController"
-import Api, { ApiRouter } from "./http/Api"
-import AuthRouter from "./http/routers/AuthRouter"
-import HttpServer from "./http/HttpServer"
-import PublicRouter from "./http/routers/PublicRouter"
-import PublicController from "./controller/PublicController"
-import UserController from "./controller/UserController"
-import UserRouter from "./http/routers/UserRouter"
 import ContextContainer from "../domain/ContextContainer"
+import FirebaseAuthDataSource from "../persistance/datasources/auth/FIrebaseAuthDataSource"
 import IUserRepository from "../persistance/repositories/user/IUserRepository"
 import CommandFactory from "./commands/CommandFactory"
+import Config from "./Config"
+import AuthController from "./controller/AuthController"
+import PublicController from "./controller/PublicController"
+import UserController from "./controller/UserController"
+import Api, { ApiRouter } from "./http/Api"
+import HttpServer from "./http/HttpServer"
+import AuthRouter from "./http/routers/AuthRouter"
+import PublicRouter from "./http/routers/PublicRouter"
+import UserRouter from "./http/routers/UserRouter"
 import QueryFactory from "./queries/QueryFactory"
+import AuthService from "./service/AuthService"
 
 export default class App {
     private _httpServer!: HttpServer
@@ -40,7 +42,7 @@ export default class App {
     private _createHttpServer() {
         const routers: ApiRouter[] = [
             new PublicRouter(new PublicController()),
-            new AuthRouter(new AuthController()),
+            new AuthRouter(new AuthController(new AuthService(new FirebaseAuthDataSource()))),
             new UserRouter(new UserController(this._commandFactory, this._queryFactory))
         ]
 
