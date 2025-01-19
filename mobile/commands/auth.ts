@@ -4,16 +4,20 @@ import { signInWithEmailAndPassword, signOut } from "firebase/auth"
 import { GoogleSignin } from "../googleSignInConfig"
 import { auth } from "../firebaseConfig"
 
-export async function signInWithGoogleCommand() {
+export async function signInWithGoogleCommand(): Promise<boolean> {
     try {
         await GoogleSignin.hasPlayServices();
         const userInfo = await GoogleSignin.signIn();
 
         if (userInfo.data && userInfo.data.idToken) {
             await storeToken(userInfo.data.idToken);
+            return true
         }
+
+        return false
     } catch (error) {
         console.log(error);
+        throw error;
     }
 }
 

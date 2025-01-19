@@ -33,8 +33,10 @@ export default function LoginScreen() {
   };
 
   const handleGoogleSignIn = async () => {
-    await signInWithGoogleCommand();
-    router.push(Routes.HOME);
+    const success = await signInWithGoogleCommand();
+    if (success) {
+      router.push(Routes.HOME);
+    }
   };
 
   return (
@@ -112,6 +114,7 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: "center",
     marginBottom: 20,
+    marginTop: "5%",
   },
   logo: {
     width: 220,
