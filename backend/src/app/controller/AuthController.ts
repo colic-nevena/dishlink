@@ -7,6 +7,6 @@ export default class AuthController {
 
     async register(req: any, res: any) {
         await this._authService.register(req.body.fullName, req.body.email, req.body.password)
-        res.send()
+        res.status(201).send()
     }
 }

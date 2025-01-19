@@ -5,14 +5,20 @@ import {
   SafeAreaView,
   View,
   Image,
-  Alert,
   TouchableOpacity,
 } from "react-native";
 import AppTextInput from "@/components/AppTextInput";
 import AppButton from "@/components/AppButton";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { Routes } from "@/constants/Routes";
+import { registerCommand } from "@/commands/auth";
+import Snackbar from "react-native-snackbar";
+import Styles from "@/constants/Styles";
 
 export default function RegisterScreen() {
+  const router = useRouter();
+
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,7 +30,21 @@ export default function RegisterScreen() {
   const toggleVerifyPasswordVisibility = () =>
     setVerifyPasswordVisible(!verifyPasswordVisible);
 
-  const handleSubmit = () => {};
+  const handleSubmit = async () => {
+    const success = await registerCommand(fullName, email, password);
+    if (success) {
+      Snackbar.show({
+        text: "Registration successful! You can now login.",
+        duration: Snackbar.LENGTH_SHORT,
+        backgroundColor: Styles.colors.primary,
+        textColor: Styles.colors.white,
+      });
+
+      setTimeout(() => {
+        router.push(Routes.LOGIN);
+      }, 1000);
+    }
+  };
 
   return (
     <ImageBackground

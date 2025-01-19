@@ -12,7 +12,7 @@ export default class UserRouter implements ApiRouter {
     get router(): Router {
         return Router()
             .get(
-                "/",
+                "/verify-token",
                 authenticateToken,
                 asyncHandler(async (req, res) => this._controller.getUser(req, res))
             );

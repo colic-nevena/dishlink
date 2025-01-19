@@ -20,6 +20,5 @@ export const registerSchema = {
             pattern: "^[a-zA-Z]+(?: [a-zA-Z]+)*$",
             description: "Full name must contain only letters and single spaces."
         }
-    },
-    additionalProperties: false
+    }
 }

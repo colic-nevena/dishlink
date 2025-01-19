@@ -8,53 +8,30 @@ import {
 } from "react-native";
 import AppTextInput from "@/components/AppTextInput";
 import AppButton from "@/components/AppButton";
-import {
-  GoogleSigninButton,
-  statusCodes,
-} from "@react-native-google-signin/google-signin";
-import * as SecureStore from "expo-secure-store";
-import { GoogleSignin, configureGoogleSignIn } from "../../googleSignInConfig";
+import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
+import { configureGoogleSignIn } from "../../googleSignInConfig";
+import { loginCommand, signInWithGoogleCommand } from "@/commands/auth";
+import { useRouter } from "expo-router";
+import { Routes } from "@/constants/Routes";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     configureGoogleSignIn();
   }, []);
 
-  const storeToken = async (token: string) => {
-    try {
-      await SecureStore.setItemAsync("userToken", token);
-    } catch (error) {
-      console.error("Error storing token:", error);
-    }
-  };
-
-  const handleSubmit = () => {
-    console.log("POZVAN LOGIN SUBMIT");
+  const handleSubmit = async () => {
+    await loginCommand(email, password);
+    router.push(Routes.HOME);
   };
 
   const handleGoogleSignIn = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-
-      if (userInfo.data && userInfo.data.idToken) {
-        await storeToken(userInfo.data.idToken);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    await signInWithGoogleCommand();
+    router.push(Routes.HOME);
   };
-
-  /**
-   const signOut = async () => {
-    GoogleSignin.revokeAccess();
-    GoogleSignin.signOut();
-    router.replace("/authentication");
-  };
-*/
 
   return (
     <ImageBackground
