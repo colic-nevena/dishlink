@@ -1,46 +1,54 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { View, StyleSheet, TextInput, KeyboardTypeOptions } from "react-native";
+import { View, StyleSheet, TextInput } from "react-native";
 import defaultStyles from "../constants/Styles";
 import Styles from "../constants/Styles";
 
 interface Props {
-  icon?: any;
+  icon?: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
   placeholder: string;
-  autoCapitalize?: "none" | "sentences" | "words" | "characters" | undefined;
+  autoCapitalize?: "none" | "sentences" | "words" | "characters";
   autoCorrect?: boolean;
-  keyboardType?: KeyboardTypeOptions | undefined;
-  textContentType?: any;
+  keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
+  textContentType?:
+    | "none"
+    | "URL"
+    | "emailAddress"
+    | "password"
+    | "telephoneNumber"
+    | "username";
   secureTextEntry?: boolean;
   maxLength?: number;
-  multiline: boolean;
+  multiline?: boolean;
   numberOfLines?: number;
-  width?: number;
+  width?: number | "auto";
   onChangeText: (text: string) => void;
   onBlur?: () => void;
   value: string;
 }
 
-export default function AppTextInput(props: Props) {
+const AppTextInput: React.FC<Props> = React.memo((props) => {
+  const { icon, placeholder, width = "auto", ...otherProps } = props;
+
   return (
-    <View style={[styles.container, { width: props.width || "100%" }]}>
-      {props.icon && (
+    <View style={[styles.container, { width }]}>
+      {icon && (
         <MaterialCommunityIcons
           style={styles.icon}
-          name={props.icon}
+          name={icon}
           size={20}
           color={defaultStyles.colors.mediumGrey}
         />
       )}
-
       <TextInput
+        placeholder={placeholder}
         placeholderTextColor={defaultStyles.colors.mediumGrey}
-        style={defaultStyles.text}
-        {...props}
+        style={[defaultStyles.text, styles.text]}
+        {...otherProps}
       />
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -48,13 +56,16 @@ const styles = StyleSheet.create({
     borderColor: Styles.colors.mediumGrey,
     borderWidth: 1,
     flexDirection: "row",
+    alignItems: "center",
     marginVertical: 10,
-    paddingRight: 10,
-    padding: 8,
+    padding: 10,
   },
   icon: {
     marginRight: 10,
-    marginLeft: 10,
-    marginTop: 4,
+  },
+  text: {
+    flex: 1,
   },
 });
+
+export default AppTextInput;

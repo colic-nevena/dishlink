@@ -5,6 +5,10 @@ import {
   SafeAreaView,
   View,
   Image,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
 } from "react-native";
 import AppTextInput from "@/components/AppTextInput";
 import AppButton from "@/components/AppButton";
@@ -34,90 +38,95 @@ export default function LoginScreen() {
   };
 
   return (
-    <ImageBackground
-      style={styles.background}
-      source={require("../../assets/images/authScreen.png")}
-    >
-      <SafeAreaView style={styles.container}>
-        <View style={styles.logoContainer}>
-          <Image
-            source={require("../../assets/images/logo.png")}
-            style={styles.logo}
-          />
-        </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <ImageBackground
+        style={styles.background}
+        source={require("../../assets/images/authScreen.png")}
+        resizeMode="cover"
+      >
+        <SafeAreaView style={styles.container}>
+          <KeyboardAvoidingView
+            style={styles.formContainer}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          >
+            <View style={styles.logoContainer}>
+              <Image
+                source={require("../../assets/images/logo.png")}
+                style={styles.logo}
+              />
+            </View>
 
-        <View style={styles.formContainer}>
-          <AppTextInput
-            icon="email"
-            placeholder="Email"
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="email-address"
-            textContentType="emailAddress"
-            secureTextEntry={false}
-            maxLength={50}
-            multiline={false}
-            numberOfLines={1}
-            onChangeText={(text) => setEmail(text)}
-            value={email}
-          />
+            <View style={styles.form}>
+              <AppTextInput
+                icon="email"
+                placeholder="Email"
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="email-address"
+                textContentType="emailAddress"
+                maxLength={50}
+                onChangeText={setEmail}
+                value={email}
+              />
 
-          <AppTextInput
-            icon="lock"
-            placeholder="Password"
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="default"
-            textContentType="password"
-            secureTextEntry={true}
-            maxLength={50}
-            multiline={false}
-            numberOfLines={1}
-            onChangeText={(text) => setPassword(text)}
-            value={password}
-          />
+              <AppTextInput
+                icon="lock"
+                placeholder="Password"
+                autoCapitalize="none"
+                autoCorrect={false}
+                textContentType="password"
+                secureTextEntry
+                maxLength={50}
+                onChangeText={setPassword}
+                value={password}
+              />
 
-          <View style={styles.button}>
-            <AppButton title="Login" onPress={handleSubmit} />
-          </View>
+              <View style={styles.button}>
+                <AppButton title="Login" onPress={handleSubmit} />
+              </View>
 
-          <View style={styles.googleButton}>
-            <GoogleSigninButton
-              size={GoogleSigninButton.Size.Icon}
-              color={GoogleSigninButton.Color.Light}
-              onPress={handleGoogleSignIn}
-            />
-          </View>
-        </View>
-      </SafeAreaView>
-    </ImageBackground>
+              <View style={styles.googleButton}>
+                <GoogleSigninButton
+                  size={GoogleSigninButton.Size.Icon}
+                  color={GoogleSigninButton.Color.Light}
+                  onPress={handleGoogleSignIn}
+                />
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
+      </ImageBackground>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
+    justifyContent: "center",
   },
   container: {
     flex: 1,
-    width: "100%",
-    alignItems: "center",
+    justifyContent: "center",
   },
   logoContainer: {
-    justifyContent: "center",
     alignItems: "center",
-    marginTop: "10%",
-    marginBottom: "5%",
+    marginBottom: 20,
   },
   logo: {
     width: 220,
     height: 200,
   },
   formContainer: {
-    width: "80%",
-    maxWidth: 400,
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    marginTop: "10%",
+  },
+  form: {
+    width: "100%",
+    maxWidth: 300,
   },
   button: {
     marginTop: 20,
