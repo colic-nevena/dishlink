@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  ScrollView,
   Platform,
 } from "react-native";
 import AppTextInput from "@/components/AppTextInput";
@@ -59,92 +60,98 @@ export default function RegisterScreen() {
       >
         <SafeAreaView style={styles.container}>
           <KeyboardAvoidingView
-            style={styles.formContainer}
+            style={styles.keyboardAvoidingView}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
           >
-            <View style={styles.logoContainer}>
-              <Image
-                source={require("../../assets/images/logo.png")}
-                style={styles.logo}
-              />
-            </View>
+            <ScrollView
+              contentContainerStyle={styles.scrollContent}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.logoContainer}>
+                <Image
+                  source={require("../../assets/images/logo.png")}
+                  style={styles.logo}
+                />
+              </View>
 
-            <View style={styles.form}>
-              <AppTextInput
-                icon="account"
-                placeholder="Full Name"
-                autoCapitalize="words"
-                autoCorrect={false}
-                maxLength={50}
-                onChangeText={setFullName}
-                value={fullName}
-              />
-
-              <AppTextInput
-                icon="email"
-                placeholder="Email"
-                autoCapitalize="none"
-                autoCorrect={false}
-                keyboardType="email-address"
-                textContentType="emailAddress"
-                maxLength={50}
-                onChangeText={setEmail}
-                value={email}
-              />
-
-              <View style={styles.passwordContainer}>
+              <View style={styles.form}>
                 <AppTextInput
-                  icon="lock"
-                  placeholder="Password"
+                  icon="account"
+                  placeholder="Full Name"
+                  autoCapitalize="words"
+                  autoCorrect={false}
+                  maxLength={50}
+                  onChangeText={setFullName}
+                  value={fullName}
+                />
+
+                <AppTextInput
+                  icon="email"
+                  placeholder="Email"
                   autoCapitalize="none"
                   autoCorrect={false}
-                  secureTextEntry={!passwordVisible}
-                  textContentType="password"
+                  keyboardType="email-address"
+                  textContentType="emailAddress"
                   maxLength={50}
-                  onChangeText={setPassword}
-                  value={password}
+                  onChangeText={setEmail}
+                  value={email}
                 />
-                <TouchableOpacity
-                  onPress={togglePasswordVisibility}
-                  style={styles.visibilityToggle}
-                >
-                  <MaterialIcons
-                    name={passwordVisible ? "visibility" : "visibility-off"}
-                    size={24}
-                    color="gray"
-                  />
-                </TouchableOpacity>
-              </View>
 
-              <View style={styles.passwordContainer}>
-                <AppTextInput
-                  icon="lock"
-                  placeholder="Verify Password"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  secureTextEntry={!verifyPasswordVisible}
-                  maxLength={50}
-                  onChangeText={setVerifyPassword}
-                  value={verifyPassword}
-                />
-                <TouchableOpacity
-                  onPress={toggleVerifyPasswordVisibility}
-                  style={styles.visibilityToggle}
-                >
-                  <MaterialIcons
-                    name={
-                      verifyPasswordVisible ? "visibility" : "visibility-off"
-                    }
-                    size={24}
-                    color="gray"
+                <View style={styles.passwordContainer}>
+                  <AppTextInput
+                    icon="lock"
+                    placeholder="Password"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    secureTextEntry={!passwordVisible}
+                    textContentType="password"
+                    maxLength={50}
+                    onChangeText={setPassword}
+                    value={password}
                   />
-                </TouchableOpacity>
-              </View>
+                  <TouchableOpacity
+                    onPress={togglePasswordVisibility}
+                    style={styles.visibilityToggle}
+                  >
+                    <MaterialIcons
+                      name={passwordVisible ? "visibility" : "visibility-off"}
+                      size={24}
+                      color="gray"
+                    />
+                  </TouchableOpacity>
+                </View>
 
-              <View style={styles.button}>
-                <AppButton title="Register" onPress={handleSubmit} />
+                <View style={styles.passwordContainer}>
+                  <AppTextInput
+                    icon="lock"
+                    placeholder="Verify Password"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    secureTextEntry={!verifyPasswordVisible}
+                    maxLength={50}
+                    onChangeText={setVerifyPassword}
+                    value={verifyPassword}
+                  />
+                  <TouchableOpacity
+                    onPress={toggleVerifyPasswordVisibility}
+                    style={styles.visibilityToggle}
+                  >
+                    <MaterialIcons
+                      name={
+                        verifyPasswordVisible ? "visibility" : "visibility-off"
+                      }
+                      size={24}
+                      color="gray"
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.button}>
+                  <AppButton title="Register" onPress={handleSubmit} />
+                </View>
               </View>
-            </View>
+            </ScrollView>
           </KeyboardAvoidingView>
         </SafeAreaView>
       </ImageBackground>
@@ -159,22 +166,24 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
   },
   logoContainer: {
     alignItems: "center",
     marginBottom: 20,
+    marginTop: -50,
   },
   logo: {
     width: 220,
     height: 200,
-  },
-  formContainer: {
-    flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    marginTop: "10%",
   },
   form: {
     width: "100%",
