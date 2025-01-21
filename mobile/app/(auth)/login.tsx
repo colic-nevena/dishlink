@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   StyleSheet,
   ImageBackground,
@@ -9,7 +9,9 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  Text,
 } from "react-native";
+import { useForm, Controller } from "react-hook-form";
 import AppTextInput from "@/components/AppTextInput";
 import AppButton from "@/components/AppButton";
 import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
@@ -18,16 +20,31 @@ import { loginCommand, signInWithGoogleCommand } from "@/commands/auth";
 import { useRouter } from "expo-router";
 import { Routes } from "@/constants/Routes";
 
+interface LoginFormInputs {
+  email: string;
+  password: string;
+}
+
 export default function LoginScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const router = useRouter();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormInputs>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
   useEffect(() => {
     configureGoogleSignIn();
   }, []);
 
-  const handleSubmit = async () => {
+  const onSubmit = async (inputData: LoginFormInputs) => {
+    const { email, password } = inputData;
     await loginCommand(email, password);
     router.push(Routes.HOME);
   };
@@ -52,39 +69,64 @@ export default function LoginScreen() {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
             <View style={styles.logoContainer}>
-              <Image
-                source={require("../../assets/images/logo.png")}
-                style={styles.logo}
-              />
+              <Image source={require("../../assets/images/logo.png")} style={styles.logo} />
             </View>
 
             <View style={styles.form}>
-              <AppTextInput
-                icon="email"
-                placeholder="Email"
-                autoCapitalize="none"
-                autoCorrect={false}
-                keyboardType="email-address"
-                textContentType="emailAddress"
-                maxLength={50}
-                onChangeText={setEmail}
-                value={email}
+              <Controller
+                control={control}
+                name="email"
+                rules={{
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: "Invalid email address",
+                  },
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <AppTextInput
+                    icon="email"
+                    placeholder="Email"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    keyboardType="email-address"
+                    textContentType="emailAddress"
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    value={value}
+                  />
+                )}
               />
+              {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
 
-              <AppTextInput
-                icon="lock"
-                placeholder="Password"
-                autoCapitalize="none"
-                autoCorrect={false}
-                textContentType="password"
-                secureTextEntry
-                maxLength={50}
-                onChangeText={setPassword}
-                value={password}
+              <Controller
+                control={control}
+                name="password"
+                rules={{
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <AppTextInput
+                    icon="lock"
+                    placeholder="Password"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    secureTextEntry
+                    textContentType="password"
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    value={value}
+                  />
+                )}
               />
+              {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
 
               <View style={styles.button}>
-                <AppButton title="Login" onPress={handleSubmit} />
+                <AppButton title="Login" onPress={handleSubmit(onSubmit)} />
               </View>
 
               <View style={styles.googleButton}>
@@ -137,5 +179,10 @@ const styles = StyleSheet.create({
   googleButton: {
     marginTop: 20,
     alignItems: "center",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 5,
   },
 });

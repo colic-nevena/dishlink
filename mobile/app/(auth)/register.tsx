@@ -11,7 +11,9 @@ import {
   Keyboard,
   ScrollView,
   Platform,
+  Text,
 } from "react-native";
+import { useForm, Controller } from "react-hook-form";
 import AppTextInput from "@/components/AppTextInput";
 import AppButton from "@/components/AppButton";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -21,21 +23,36 @@ import { registerCommand } from "@/commands/auth";
 import Snackbar from "react-native-snackbar";
 import Styles from "@/constants/Styles";
 
-export default function RegisterScreen() {
-  const router = useRouter();
+interface RegisterFormInputs {
+  fullName: string;
+  email: string;
+  password: string;
+  verifyPassword: string;
+}
 
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [verifyPassword, setVerifyPassword] = useState("");
+export default function RegisterScreen() {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<RegisterFormInputs>({
+    defaultValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      verifyPassword: "",
+    },
+  });
+  const router = useRouter();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [verifyPasswordVisible, setVerifyPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
-  const toggleVerifyPasswordVisibility = () =>
-    setVerifyPasswordVisible(!verifyPasswordVisible);
+  const toggleVerifyPasswordVisibility = () => setVerifyPasswordVisible(!verifyPasswordVisible);
 
-  const handleSubmit = async () => {
+  const onSubmit = async (data: RegisterFormInputs) => {
+    const { fullName, email, password } = data;
     const success = await registerCommand(fullName, email, password);
     if (success) {
       Snackbar.show({
@@ -69,46 +86,84 @@ export default function RegisterScreen() {
               keyboardShouldPersistTaps="handled"
             >
               <View style={styles.logoContainer}>
-                <Image
-                  source={require("../../assets/images/logo.png")}
-                  style={styles.logo}
-                />
+                <Image source={require("../../assets/images/logo.png")} style={styles.logo} />
               </View>
 
               <View style={styles.form}>
-                <AppTextInput
-                  icon="account"
-                  placeholder="Full Name"
-                  autoCapitalize="words"
-                  autoCorrect={false}
-                  maxLength={50}
-                  onChangeText={setFullName}
-                  value={fullName}
+                <Controller
+                  control={control}
+                  name="fullName"
+                  rules={{
+                    required: "Full name is required",
+                    minLength: {
+                      value: 2,
+                      message: "Full name must be at least 2 characters",
+                    },
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <AppTextInput
+                      icon="account"
+                      placeholder="Full Name"
+                      autoCapitalize="words"
+                      autoCorrect={false}
+                      maxLength={50}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
                 />
+                {errors.fullName && <Text style={styles.errorText}>{errors.fullName.message}</Text>}
 
-                <AppTextInput
-                  icon="email"
-                  placeholder="Email"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  keyboardType="email-address"
-                  textContentType="emailAddress"
-                  maxLength={50}
-                  onChangeText={setEmail}
-                  value={email}
+                <Controller
+                  control={control}
+                  name="email"
+                  rules={{
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: "Invalid email address",
+                    },
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <AppTextInput
+                      icon="email"
+                      placeholder="Email"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      keyboardType="email-address"
+                      textContentType="emailAddress"
+                      maxLength={50}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
                 />
+                {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
 
                 <View style={styles.passwordContainer}>
-                  <AppTextInput
-                    icon="lock"
-                    placeholder="Password"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    secureTextEntry={!passwordVisible}
-                    textContentType="password"
-                    maxLength={50}
-                    onChangeText={setPassword}
-                    value={password}
+                  <Controller
+                    control={control}
+                    name="password"
+                    rules={{
+                      required: "Password is required",
+                      minLength: {
+                        value: 6,
+                        message: "Password must be at least 6 characters",
+                      },
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                      <AppTextInput
+                        icon="lock"
+                        placeholder="Password"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        secureTextEntry={!passwordVisible}
+                        textContentType="password"
+                        maxLength={50}
+                        onChangeText={onChange}
+                        value={value}
+                      />
+                    )}
                   />
                   <TouchableOpacity
                     onPress={togglePasswordVisibility}
@@ -121,34 +176,46 @@ export default function RegisterScreen() {
                     />
                   </TouchableOpacity>
                 </View>
+                {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
 
                 <View style={styles.passwordContainer}>
-                  <AppTextInput
-                    icon="lock"
-                    placeholder="Verify Password"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    secureTextEntry={!verifyPasswordVisible}
-                    maxLength={50}
-                    onChangeText={setVerifyPassword}
-                    value={verifyPassword}
+                  <Controller
+                    control={control}
+                    name="verifyPassword"
+                    rules={{
+                      required: "Please confirm your password",
+                      validate: (value) => value === watch("password") || "Passwords do not match",
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                      <AppTextInput
+                        icon="lock"
+                        placeholder="Verify Password"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        secureTextEntry={!verifyPasswordVisible}
+                        maxLength={50}
+                        onChangeText={onChange}
+                        value={value}
+                      />
+                    )}
                   />
                   <TouchableOpacity
                     onPress={toggleVerifyPasswordVisibility}
                     style={styles.visibilityToggle}
                   >
                     <MaterialIcons
-                      name={
-                        verifyPasswordVisible ? "visibility" : "visibility-off"
-                      }
+                      name={verifyPasswordVisible ? "visibility" : "visibility-off"}
                       size={24}
                       color="gray"
                     />
                   </TouchableOpacity>
                 </View>
+                {errors.verifyPassword && (
+                  <Text style={styles.errorText}>{errors.verifyPassword.message}</Text>
+                )}
 
                 <View style={styles.button}>
-                  <AppButton title="Register" onPress={handleSubmit} />
+                  <AppButton title="Register" onPress={handleSubmit(onSubmit)} />
                 </View>
               </View>
             </ScrollView>
@@ -202,5 +269,10 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 20,
     width: "100%",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 5,
   },
 });

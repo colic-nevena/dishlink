@@ -1,6 +1,6 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { View, StyleSheet, TextInput } from "react-native";
+import { View, StyleSheet, TextInput, Text } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import defaultStyles from "../constants/Styles";
 import Styles from "../constants/Styles";
 
@@ -10,13 +10,7 @@ interface Props {
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
   autoCorrect?: boolean;
   keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
-  textContentType?:
-    | "none"
-    | "URL"
-    | "emailAddress"
-    | "password"
-    | "telephoneNumber"
-    | "username";
+  textContentType?: "none" | "URL" | "emailAddress" | "password" | "telephoneNumber" | "username";
   secureTextEntry?: boolean;
   maxLength?: number;
   multiline?: boolean;
@@ -65,6 +59,11 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
+  },
+  errorText: {
+    color: Styles.colors.danger,
+    fontSize: 12,
+    marginTop: 5,
   },
 });
 
