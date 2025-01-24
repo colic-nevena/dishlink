@@ -156,10 +156,11 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: "center",
     marginBottom: 20,
+    marginTop: "10%",
   },
   logo: {
-    width: 220,
-    height: 200,
+    width: 130,
+    height: 130,
   },
   formContainer: {
     flex: 1,

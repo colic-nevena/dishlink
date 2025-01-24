@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  ActivityIndicator,
-  Image,
-  ImageBackground,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, Image, ImageBackground, StyleSheet, Text, View } from "react-native";
 import { Link } from "expo-router";
 import { useFonts } from "expo-font";
 import colors from "@/constants/Colors";
@@ -35,10 +28,7 @@ export default function WelcomeScreen() {
     >
       <View style={styles.logoContainer}>
         <Text style={styles.tagline}>Your cooking companion</Text>
-        <Image
-          source={require("../../assets/images/logo.png")}
-          style={styles.logo}
-        />
+        <Image source={require("../../assets/images/logo.png")} style={styles.logo} />
       </View>
 
       <View style={styles.buttonContainer}>
@@ -87,7 +77,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logo: {
-    width: 220,
-    height: 200,
+    width: 150,
+    height: 150,
   },
 });
