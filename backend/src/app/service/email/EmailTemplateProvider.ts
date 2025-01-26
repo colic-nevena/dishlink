@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "node:fs/promises";
 import EmailTemplate, { IEmailTemplate } from "./EmailTemplate";
-import { InvitationTemplateData, BaseTemplateData } from "./EmailTemplateDataTypes";
+import { EmailVerificationTemplateData, BaseTemplateData } from "./EmailTemplateDataTypes";
 
 export default class EmailTemplateProvider {
 
@@ -9,8 +9,8 @@ export default class EmailTemplateProvider {
         private readonly _publicUrl: string
     ) { }
 
-    async getUserInvitationTemplate(data: InvitationTemplateData): Promise<IEmailTemplate> {
-        return this.getTemplate("invitation", "DishLink Invitation", data)
+    async getEmailVerificationTemplate(data: EmailVerificationTemplateData): Promise<IEmailTemplate> {
+        return this.getTemplate("emailVerification", "DishLink Email Verification", data)
     }
 
     private completeData<T extends BaseTemplateData>(data: any): T {

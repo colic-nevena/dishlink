@@ -58,7 +58,7 @@ export default class FirebaseAuthDataSource implements IFirebaseAuthDataSource {
 
     private async sendVerificationEmail(email: string, link: string): Promise<void> {
         try {
-            const template = await this._emailTemplateProvider.getUserInvitationTemplate({ EMAIL: email, VERIFICATION_URL: link, LOGO_URL: this._config.url })
+            const template = await this._emailTemplateProvider.getEmailVerificationTemplate({ EMAIL: email, VERIFICATION_URL: link, LOGO_URL: this._config.url })
             this._emailService.sendTemplateEmail(email, template)
         }
         catch (error) {
