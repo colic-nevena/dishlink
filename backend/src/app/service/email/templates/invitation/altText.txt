@@ -1,0 +1,9 @@
+Dear Customer,
+
+You have been invited to HOME system.
+To accept invitation and continue, please press the button below.
+
+{{VERIFICATION_URL}}
+
+Kind regards,
+The DishLink Team

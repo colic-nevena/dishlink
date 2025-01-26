@@ -1,5 +1,5 @@
 import ContextContainer from "../domain/ContextContainer"
-import FirebaseAuthDataSource from "../persistance/datasources/auth/FIrebaseAuthDataSource"
+import FirebaseAuthDataSource from "../persistance/datasources/auth/FirebaseAuthDataSource"
 import IUserRepository from "../persistance/repositories/user/IUserRepository"
 import CommandFactory from "./commands/CommandFactory"
 import Config from "./Config"
@@ -12,7 +12,9 @@ import AuthRouter from "./http/routers/AuthRouter"
 import PublicRouter from "./http/routers/PublicRouter"
 import UserRouter from "./http/routers/UserRouter"
 import QueryFactory from "./queries/QueryFactory"
-import AuthService from "./service/AuthService"
+import AuthService from "./service/auth/AuthService"
+import EmailService from "./service/email/EmailService"
+import EmailTemplateProvider from "./service/email/EmailTemplateProvider"
 
 export default class App {
     private _httpServer!: HttpServer
@@ -42,7 +44,13 @@ export default class App {
     private _createHttpServer() {
         const routers: ApiRouter[] = [
             new PublicRouter(new PublicController()),
-            new AuthRouter(new AuthController(new AuthService(new FirebaseAuthDataSource()))),
+            new AuthRouter(
+                new AuthController(
+                    new AuthService(
+                        new FirebaseAuthDataSource(
+                            new EmailService(),
+                            new EmailTemplateProvider(`${this._config.http.host}:${this._config.http.port}`), this._config.logo))
+                )),
             new UserRouter(new UserController(this._commandFactory, this._queryFactory))
         ]
 
