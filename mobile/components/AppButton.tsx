@@ -29,7 +29,7 @@ const getSizeStyles = (size: 'small' | 'medium' | 'large') => {
         case 'small':
             return {
                 button: {
-                    padding: 8,
+                    padding: 6,
                     borderRadius: 20,
                     width: '50%' as ViewStyle['width'],
                 },
@@ -40,7 +40,7 @@ const getSizeStyles = (size: 'small' | 'medium' | 'large') => {
         case 'medium':
             return {
                 button: {
-                    padding: 10,
+                    padding: 8,
                     borderRadius: 22,
                     width: '75%' as ViewStyle['width'],
                 },
@@ -52,7 +52,7 @@ const getSizeStyles = (size: 'small' | 'medium' | 'large') => {
         default:
             return {
                 button: {
-                    padding: 13,
+                    padding: 10,
                     borderRadius: 25,
                     width: '100%' as ViewStyle['width'],
                 },
