@@ -23,7 +23,7 @@ export default function WelcomeScreen() {
     return (
         <ImageBackground
             style={styles.background}
-            source={require("../../assets/images/welcome2.jpg")}
+            source={require("../../assets/images/welcome.jpg")}
         >
 
             <View style={styles.buttonContainer}>
