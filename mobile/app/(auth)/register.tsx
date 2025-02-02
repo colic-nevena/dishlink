@@ -19,7 +19,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Routes } from "@/constants/Routes";
 import { registerCommand } from "@/commands/auth";
-import Snackbar from "react-native-snackbar";
 import Styles from "@/constants/Styles";
 
 interface RegisterFormInputs {

@@ -13,6 +13,12 @@ export default class AuthRouter implements ApiRouter {
     get router(): Router {
         return Router()
             .post(
+                '/login',
+                validateRequestBody(loginSchema),
+                asyncHandler(async (req, res) => this._controller.login(req, res))
+            )
+
+            .post(
                 '/register',
                 validateRequestBody(registerSchema),
                 asyncHandler(async (req, res) => this._controller.register(req, res))

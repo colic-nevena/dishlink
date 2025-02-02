@@ -44,13 +44,12 @@ export default class App {
     private _createHttpServer() {
         const routers: ApiRouter[] = [
             new PublicRouter(new PublicController()),
-            new AuthRouter(
-                new AuthController(
-                    new AuthService(
-                        new FirebaseAuthDataSource(
-                            new EmailService(),
-                            new EmailTemplateProvider(`${this._config.http.host}:${this._config.http.port}`), this._config.logo))
-                )),
+            new AuthRouter(new AuthController(new AuthService(new FirebaseAuthDataSource(
+                new EmailService(),
+                new EmailTemplateProvider(`${this._config.http.host}:${this._config.http.port}`),
+                this._config.logo,
+            ))
+            )),
             new UserRouter(new UserController(this._commandFactory, this._queryFactory))
         ]
 

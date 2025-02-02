@@ -13,6 +13,14 @@ export default class AuthService implements IAuthService {
         private readonly _firebaseAuthDatasource: IFirebaseAuthDataSource
     ) { }
 
+    async login(email: string): Promise<void> {
+        try {
+            return await this._firebaseAuthDatasource.login(email)
+        } catch (error) {
+            throw new AuthServiceError((error as Error).message)
+        }
+    }
+
     async register(fullName: string, email: string, password: string): Promise<void> {
         try {
             return await this._firebaseAuthDatasource.register(fullName, email, password)

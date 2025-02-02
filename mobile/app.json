@@ -9,7 +9,7 @@
       "userInterfaceStyle": "automatic",
       "newArchEnabled": true,
       "splash": {
-        "image": "./assets/images/splashScreen.jpg",
+        "image": "./assets/images/splashScreen.png",
         "resizeMode": "cover",
         "backgroundColor": "#FFF3E0"
       },
@@ -18,7 +18,7 @@
       },
       "android": {
         "adaptiveIcon": {
-          "foregroundImage": "./assets/images/splashScreen.jpg",
+          "foregroundImage": "./assets/images/splashScreen.png",
           "backgroundColor": "#FFF3E0"
         },
         "package": "com.nevena.colic1810.dishlink"
@@ -33,7 +33,7 @@
         [
           "expo-splash-screen",
           {
-            "image": "./assets/images/splashScreen.jpg",
+            "image": "./assets/images/splashScreen.png",
             "resizeMode": "cover",
             "backgroundColor": "#FFF3E0",
             "imageWidth": 500

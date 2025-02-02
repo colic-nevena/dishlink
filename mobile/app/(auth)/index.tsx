@@ -5,7 +5,6 @@ import { useFonts } from "expo-font";
 import colors from "@/constants/Colors";
 import { Routes } from "@/constants/Routes";
 import AppButton from "@/components/AppButton";
-import Styles from "@/constants/Styles";
 
 export default function WelcomeScreen() {
     const [fontsLoaded] = useFonts({

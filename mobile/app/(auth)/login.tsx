@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 import {
     StyleSheet,
     SafeAreaView,
@@ -10,31 +10,30 @@ import {
     Platform,
     Text,
     TouchableOpacity,
-} from "react-native";
-import { useForm, Controller } from "react-hook-form";
-import AppTextInput from "@/components/AppTextInput";
-import AppButton from "@/components/AppButton";
-import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
-import { configureGoogleSignIn } from "../../googleSignInConfig";
+} from "react-native"
+import { useForm, Controller } from "react-hook-form"
+import AppTextInput from "@/components/AppTextInput"
+import AppButton from "@/components/AppButton"
+import { GoogleSigninButton } from "@react-native-google-signin/google-signin"
+import { configureGoogleSignIn } from "../../googleSignInConfig"
 import {
     loginCommand,
     signInWithGoogleCommand,
     resendVerificationEmailCommand,
-} from "@/commands/auth";
-import { useRouter } from "expo-router";
-import { Routes } from "@/constants/Routes";
-import Snackbar from "react-native-snackbar";
-import Styles from "@/constants/Styles";
+} from "@/commands/auth"
+import { useRouter } from "expo-router"
+import { Routes } from "@/constants/Routes"
+import Styles from "@/constants/Styles"
 
 interface LoginFormInputs {
-    email: string;
-    password: string;
+    email: string
+    password: string
 }
 
 export default function LoginScreen() {
-    const router = useRouter();
-    const [isResendVisible, setIsResendVisible] = useState(false);
-    const [currentEmail, setCurrentEmail] = useState("");
+    const router = useRouter()
+    const [isResendVisible, setIsResendVisible] = useState(false)
+    const [currentEmail, setCurrentEmail] = useState("")
 
     const {
         control,
@@ -45,36 +44,36 @@ export default function LoginScreen() {
             email: "",
             password: "",
         },
-    });
+    })
 
     useEffect(() => {
-        configureGoogleSignIn();
-    }, []);
+        configureGoogleSignIn()
+    }, [])
 
     const onSubmit = async (inputData: LoginFormInputs) => {
-        const { email, password } = inputData;
-        setCurrentEmail(email);
+        const { email, password } = inputData
+        setCurrentEmail(email)
 
-        const success = await loginCommand(email, password);
+        const success = await loginCommand(email, password)
         if (success.hasError === false) {
-            router.push(Routes.HOME);
+            router.push(Routes.HOME)
         } else if (success.message === "Email not verified") {
-            setIsResendVisible(true);
+            setIsResendVisible(true)
         } else {
-            setIsResendVisible(false);
+            setIsResendVisible(false)
         }
-    };
+    }
 
     const handleGoogleSignIn = async () => {
-        const success = await signInWithGoogleCommand();
+        const success = await signInWithGoogleCommand()
         if (success) {
-            router.push(Routes.HOME);
+            router.push(Routes.HOME)
         }
-    };
+    }
 
     const handleResendVerification = async () => {
-        await resendVerificationEmailCommand(currentEmail);
-    };
+        await resendVerificationEmailCommand(currentEmail)
+    }
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -161,18 +160,19 @@ export default function LoginScreen() {
                             </TouchableOpacity>
                         )}
 
-                        <View style={styles.googleButtonContainer}>
-                            <GoogleSigninButton
-                                size={GoogleSigninButton.Size.Wide}
-                                color={GoogleSigninButton.Color.Light}
-                                onPress={handleGoogleSignIn}
-                            />
-                        </View>
+                        <TouchableOpacity activeOpacity={0.8} onPress={handleGoogleSignIn}>
+                            <View style={styles.googleButtonContainer}>
+                                <GoogleSigninButton
+                                    size={GoogleSigninButton.Size.Wide}
+                                    color={GoogleSigninButton.Color.Light}
+                                />
+                            </View>
+                        </TouchableOpacity>
                     </View>
                 </KeyboardAvoidingView>
             </SafeAreaView>
         </TouchableWithoutFeedback>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     googleButtonContainer: {
-        marginTop: 20,
+        marginTop: 5,
         alignItems: "center",
     },
     errorText: {
@@ -227,4 +227,4 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textDecorationLine: "underline",
     },
-});
+})
