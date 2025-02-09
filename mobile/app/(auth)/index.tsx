@@ -5,6 +5,8 @@ import { useFonts } from "expo-font";
 import colors from "@/constants/Colors";
 import { Routes } from "@/constants/Routes";
 import AppButton from "@/components/AppButton";
+import { Colors } from "react-native/Libraries/NewAppScreen";
+import Styles from "@/constants/Styles";
 
 export default function WelcomeScreen() {
     const [fontsLoaded] = useFonts({
@@ -22,7 +24,7 @@ export default function WelcomeScreen() {
     return (
         <ImageBackground
             style={styles.background}
-            source={require("../../assets/images/welcome.jpg")}
+            source={require("../../assets/images/wallpaper2.png")}
         >
 
             <View style={styles.buttonContainer}>
@@ -47,12 +49,13 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#fff",
+        backgroundColor: "#fff"
     },
     background: {
         flex: 1,
         justifyContent: "flex-end",
         alignItems: "center",
+        backgroundColor: Styles.colors.lightGrey,
     },
     buttonContainer: {
         padding: 20,
