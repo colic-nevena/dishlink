@@ -1,11 +1,10 @@
 import React from "react";
-import { ActivityIndicator, Image, ImageBackground, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, ImageBackground, StyleSheet, View } from "react-native";
 import { Link } from "expo-router";
 import { useFonts } from "expo-font";
 import colors from "@/constants/Colors";
 import { Routes } from "@/constants/Routes";
 import AppButton from "@/components/AppButton";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import Styles from "@/constants/Styles";
 
 export default function WelcomeScreen() {
@@ -25,6 +24,7 @@ export default function WelcomeScreen() {
         <ImageBackground
             style={styles.background}
             source={require("../../assets/images/wallpaper2.png")}
+            resizeMode="contain"
         >
 
             <View style={styles.buttonContainer}>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "flex-end",
         alignItems: "center",
-        backgroundColor: Styles.colors.lightGrey,
+        backgroundColor: "#fff"
     },
     buttonContainer: {
         padding: 20,
