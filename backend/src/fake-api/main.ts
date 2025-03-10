@@ -1,9 +1,14 @@
 import ContextContainer from "../domain/ContextContainer"
-import CookbookRepository from "./repositories/ICookbookRepository"
-import RecipeRepository from "./repositories/IRecipeRepository"
-import UserRepository from "./repositories/IUserRepository"
+import Cookbook from "../domain/cookbook/Cookbook"
+import Ingredient from "../domain/cookbook/Ingredient"
+import Recipe from "../domain/cookbook/Recipe"
+import CookbookRepository from "./repositories/CookbookRepository"
+import RecipeRepository from "./repositories/RecipeRepository"
+import UserRepository from "./repositories/UserRepository"
+// import { randomUUID } from "crypto" ==> ovo je built in
 
-// queries and commands layer
+// IMPORTANT: OVO JE queries and commands layer, znaci ove fje ce da budu u komandama i querijima
+
 const recipeRepository = new RecipeRepository()
 const cookbookRepository = new CookbookRepository()
 const userRepository = new UserRepository()
@@ -24,7 +29,7 @@ async function getUserFeed(request: UserFeedRequest) {
 
 // ------------------------------------------------------------------
 
-// [GET] /api/users/:userId/cookbook => query!!!
+// [GET] /api/users/:userId/cookbooks => query!!!
 type UserCookbooksRequest = {
     userId: string
 }
@@ -60,7 +65,10 @@ type CreateCookbookRequest = {
     cookbookName: string
 }
 async function createCookbook(request: CreateCookbookRequest) {
-    return await contextContainer.cookbookContext.createCookbook(request.userId, request.cookbookName)
+    // const cookbookId = randomUUID()
+    const cookbookId = "randomUUID"
+    const cookbook = new Cookbook(cookbookId, request.cookbookName, "userIdIzTokena")
+    return await contextContainer.cookbookContext.createCookbook(cookbook)
 }
 
 // ------------------------------------------------------------------
@@ -100,6 +108,7 @@ async function unfriend(request: UnfriendRequest) {
 }
 
 // ------------------------------------------------------------------
+// [POST] /api/profile/friends/:friendId => command!!!
 type FriendRequest = {
     friendId: string
 }
@@ -112,7 +121,7 @@ async function friend(request: FriendRequest) {
 // ------------------------------------------------------------------
 // ------------------------------COOKBOOK-----------------------------
 // ------------------------------------------------------------------
-
+// [GET] /api/recipes/id/:recipeId => query!!!
 type GetRecipeByIdRequest = {
     recipeId: string
 }
@@ -121,7 +130,7 @@ async function getRecipeById(request: GetRecipeByIdRequest) {
 }
 
 // ------------------------------------------------------------------
-
+// [GET] /api/recipes/name/:recipeName => query!!!
 type GetRecipeByNameRequest = {
     recipeName: string
 }
@@ -156,7 +165,20 @@ type AddRecipeToCookbookRequest = {
     createdAt: Date
 }
 async function addRecipeToCookbook(request: AddRecipeToCookbookRequest) {
-    return await contextContainer.cookbookContext.addRecipeToCookbook(request.cookbookId, { recipe })
+    const recipe = new Recipe(
+        request.id,
+        request.title,
+        request.createdBy,
+        request.cookbookId,
+        request.ingredients,
+        request.steps,
+        request.createdAt,
+        request.image,
+        request.portions,
+        request.preparationTime,
+        request.specialNote,
+    )
+    return await contextContainer.cookbookContext.addRecipeToCookbook(request.cookbookId, recipe)
 }
 
 // ------------------------------------------------------------------
@@ -183,8 +205,33 @@ async function deleteCookbook(request: DeleteCookbookRequest) {
 type UpdateRecipeInCookbookRequest = {
     cookbookId: string
     recipeId: string
-    recipe: any // kao gore u dodavanju
+    recipe: {
+        id: string
+        title: string
+        createdBy: string
+        cookbookId: string
+        image?: string
+        portions?: number
+        preparationTime?: string
+        specialNote?: string
+        ingredients: Ingredient[]
+        steps: string[]
+        createdAt: Date
+    }
 }
 async function updateRecipeInCookbook(request: UpdateRecipeInCookbookRequest) {
-    return await contextContainer.cookbookContext.updateRecipeInCookbook(request.cookbookId, request.recipeId, { recipe })
+    const recipe = new Recipe(
+        request.recipe.id,
+        request.recipe.title,
+        request.recipe.createdBy,
+        request.recipe.cookbookId,
+        request.recipe.ingredients,
+        request.recipe.steps,
+        request.recipe.createdAt,
+        request.recipe.image,
+        request.recipe.portions,
+        request.recipe.preparationTime,
+        request.recipe.specialNote,
+    )
+    return await contextContainer.cookbookContext.updateRecipeInCookbook(request.cookbookId, request.recipeId, recipe)
 }

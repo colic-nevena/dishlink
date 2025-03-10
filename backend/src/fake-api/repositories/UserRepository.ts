@@ -1,5 +1,4 @@
-import { Recipe } from "./IRecipeRepository"
-import User from "d:/DIY/dishlink/backend/src/domain/user/User"
+import User from "../../domain/user/User"
 
 export interface IUserRepository {
     getUserByName(name: string): Promise<User>

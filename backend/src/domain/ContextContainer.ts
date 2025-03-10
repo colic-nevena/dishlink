@@ -1,6 +1,6 @@
-import ICookbookRepository from "../fake-api/repositories/ICookbookRepository";
+import ICookbookRepository from "../fake-api/repositories/CookbookRepository";
 import IUserRepository from "../persistance/repositories/user/IUserRepository";
-import CookbookContext from "./user/CookbookContext";
+import CookbookContext from "./cookbook/CookbookContext";
 import UserContext from "./user/UserContext";
 
 export default class ContextContainer {
