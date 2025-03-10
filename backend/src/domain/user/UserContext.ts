@@ -35,4 +35,28 @@ export default class UserContext {
             throw new UserContextError("[getUserByEmail]" + (error as Error).message)
         }
     }
+
+    async friend(userId: string, friendId: string): Promise<void> {
+        try {
+            const user = await this._userRepository.find(userId)
+            const friend = await this._userRepository.find(friendId)
+
+            // user.friend(friend)
+            await this._userRepository.save(user)
+        } catch (error) {
+            throw new UserContextError("[friend]" + (error as Error).message)
+        }
+    }
+
+    async unfriend(userId: string, friendId: string): Promise<void> {
+        try {
+            const user = await this._userRepository.find(userId)
+            const friend = await this._userRepository.find(friendId)
+
+            // user.unfriend(friend)
+            await this._userRepository.save(user)
+        } catch (error) {
+            throw new UserContextError("[unfriend]" + (error as Error).message)
+        }
+    }
 }
