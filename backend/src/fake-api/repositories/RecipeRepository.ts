@@ -1,215 +1,146 @@
-import Ingredient from "../../domain/cookbook/Ingredient"
-import Recipe from "../../domain/cookbook/Recipe"
+import Ingredient from '../../domain/cookbook/Ingredient';
+import Recipe from '../../domain/cookbook/Recipe';
+import { IRecipeDBDatasource, RecipeDTO } from "../datasources/RecipeDBDatasource"
+
+class RecipeRepositoryError extends Error {
+    constructor(message: string) {
+        super(`[RecipeRepository] Error: ${message}`)
+    }
+}
 
 export interface IRecipeRepository {
-    getUserLatestRecipes(userId: string): Promise<Recipe[]>
+    getRecipesCreatedBy(userId: string): Promise<Recipe[]>
+    getLatestRecipesCreatedBy(userId: string): Promise<Recipe[]>
     getAllCookbookRecipes(cookbookId: string): Promise<Recipe[]>
     getRecipesLikedBy(userId: string): Promise<Recipe[]>
     getRecipeById(recipeId: string): Promise<Recipe>
-    getRecipeByName(recipeName: string): Promise<Recipe>
+    getRecipesByName(recipeName: string): Promise<Recipe[]>
+
+    save(recipe: Recipe): Promise<void>
+    delete(recipeId: string): Promise<void>
 }
 
 export default class RecipeRepository implements IRecipeRepository {
-    async getRecipesLikedBy(userId: string): Promise<Recipe[]> {
-        return [
-            new Recipe(
-                '1',
-                'Spaghetti Carbonara',
-                userId,
-                '101',
-                [
-                    new Ingredient('Spaghetti', '200g'),
-                    new Ingredient('Eggs', '4'),
-                    new Ingredient('Pancetta', '100g'),
-                    new Ingredient('Parmesan cheese', '50g'),
-                    new Ingredient('Black pepper', 'to taste')
-                ],
-                [
-                    'Boil the spaghetti.',
-                    'Fry the pancetta.',
-                    'Mix eggs and cheese.',
-                    'Combine all ingredients.'
-                ]
-            ),
-            new Recipe(
-                '2',
-                'Chicken Curry',
-                userId,
-                '102',
-                [
-                    new Ingredient('Chicken', '500g'),
-                    new Ingredient('Curry powder', '2 tbsp'),
-                    new Ingredient('Coconut milk', '400ml'),
-                    new Ingredient('Onions', '2'),
-                    new Ingredient('Garlic', '3 cloves')
-                ],
-                [
-                    'Cook the onions and garlic.',
-                    'Add the chicken and curry powder.',
-                    'Pour in the coconut milk.',
-                    'Simmer until the chicken is cooked.'
-                ]
-            )
-        ]
+    constructor(private readonly _recipeDBDatasource: IRecipeDBDatasource) { }
+
+    async delete(recipeId: string): Promise<void> {
+        try {
+            const exists = await this._recipeDBDatasource.getRecipeById(recipeId)
+            if (!exists) throw new Error('Recipe does not exist')
+
+            return await this._recipeDBDatasource.delete(recipeId)
+        } catch (error) {
+            throw new RecipeRepositoryError(`[delete] - ${(error as Error).message}`)
+
+        }
     }
 
-    async getUserLatestRecipes(userId: string): Promise<Recipe[]> {
-        return [
-            new Recipe(
-                '1',
-                'Spaghetti Carbonara',
-                userId,
-                '101',
-                [
-                    new Ingredient('Spaghetti', '200g'),
-                    new Ingredient('Eggs', '4'),
-                    new Ingredient('Pancetta', '100g'),
-                    new Ingredient('Parmesan cheese', '50g'),
-                    new Ingredient('Black pepper', 'to taste')
-                ],
-                [
-                    'Boil the spaghetti.',
-                    'Fry the pancetta.',
-                    'Mix eggs and cheese.',
-                    'Combine all ingredients.'
-                ],
-                new Date(),
-                'carbonara.jpg',
-                4,
-                '30 minutes',
-                'A classic Italian pasta dish.'
-            ),
-            new Recipe(
-                '2',
-                'Chicken Curry',
-                userId,
-                '102',
-                [
-                    new Ingredient('Chicken', '500g'),
-                    new Ingredient('Curry powder', '2 tbsp'),
-                    new Ingredient('Coconut milk', '400ml'),
-                    new Ingredient('Onions', '2'),
-                    new Ingredient('Garlic', '3 cloves')
-                ],
-                [
-                    'Cook the onions and garlic.',
-                    'Add the chicken and curry powder.',
-                    'Pour in the coconut milk.',
-                    'Simmer until the chicken is cooked.'
-                ],
-                new Date(),
-                'chicken_curry.jpg',
-                6,
-                '45 minutes',
-                'A spicy and flavorful dish.'
-            )
-        ]
+    async save(recipe: Recipe): Promise<void> {
+        try {
+            const exists = await this._recipeDBDatasource.getRecipeById(recipe.id)
+
+            if (!exists) {
+                await this._recipeDBDatasource.save(this.mapToDTO(recipe))
+            } else {
+                await this._recipeDBDatasource.update(this.mapToDTO(recipe))
+            }
+        } catch (error) {
+            throw new RecipeRepositoryError(`[save] - ${(error as Error).message}`)
+        }
+    }
+
+    async getRecipesLikedBy(userId: string): Promise<Recipe[]> {
+        try {
+            const recipeDTOs = await this._recipeDBDatasource.getRecipesLikedBy(userId)
+            return recipeDTOs.map(this.mapToRecipe)
+        } catch (error) {
+            throw new RecipeRepositoryError(`[getRecipesLikedBy] - ${(error as Error).message}`)
+        }
+    }
+
+    async getRecipesCreatedBy(userId: string): Promise<Recipe[]> {
+        try {
+            const recipeDTOs = await this._recipeDBDatasource.getRecipesCreatedBy(userId)
+            return recipeDTOs.map(this.mapToRecipe)
+        } catch (error) {
+            throw new RecipeRepositoryError(`[getRecipesCreatedBy] - ${(error as Error).message}`)
+        }
+    }
+
+    async getLatestRecipesCreatedBy(userId: string): Promise<Recipe[]> {
+        try {
+            const recipeDTOs = await this._recipeDBDatasource.getLatestRecipesCreatedBy(userId)
+            return recipeDTOs.map(this.mapToRecipe)
+        } catch (error) {
+            throw new RecipeRepositoryError(`[getLatestRecipesCreatedBy] - ${(error as Error).message}`)
+        }
     }
 
     async getAllCookbookRecipes(cookbookId: string): Promise<Recipe[]> {
-        return [
-            new Recipe(
-                '1',
-                'Spaghetti Carbonara',
-                '1',
-                cookbookId,
-                [
-                    new Ingredient('Spaghetti', '200g'),
-                    new Ingredient('Eggs', '4'),
-                    new Ingredient('Pancetta', '100g'),
-                    new Ingredient('Parmesan cheese', '50g'),
-                    new Ingredient('Black pepper', 'to taste')
-                ],
-                [
-                    'Boil the spaghetti.',
-                    'Fry the pancetta.',
-                    'Mix eggs and cheese.',
-                    'Combine all ingredients.'
-                ],
-                new Date(),
-                'carbonara.jpg',
-                4,
-                '30 minutes',
-                'A classic Italian pasta dish.'
-            ),
-            new Recipe(
-                '2',
-                'Chicken Curry',
-                '1',
-                cookbookId,
-                [
-                    new Ingredient('Chicken', '500g'),
-                    new Ingredient('Curry powder', '2 tbsp'),
-                    new Ingredient('Coconut milk', '400ml'),
-                    new Ingredient('Onions', '2'),
-                    new Ingredient('Garlic', '3 cloves')
-                ],
-                [
-                    'Cook the onions and garlic.',
-                    'Add the chicken and curry powder.',
-                    'Pour in the coconut milk.',
-                    'Simmer until the chicken is cooked.'
-                ],
-                new Date(),
-                'chicken_curry.jpg',
-                6,
-                '45 minutes',
-                'A spicy and flavorful dish.'
-            )
-        ]
+        try {
+            const recipeDTOs = await this._recipeDBDatasource.getAllCookbookRecipes(cookbookId)
+            return recipeDTOs.map(this.mapToRecipe)
+        } catch (error) {
+            throw new RecipeRepositoryError(`[getAllCookbookRecipes] - ${(error as Error).message}`)
+        }
     }
 
     async getRecipeById(recipeId: string): Promise<Recipe> {
+        try {
+            const dto = await this._recipeDBDatasource.getRecipeById(recipeId)
+            return this.mapToRecipe(dto)
+        } catch (error) {
+            throw new RecipeRepositoryError(`[getRecipeById] - ${(error as Error).message}`)
+        }
+    }
+
+    async getRecipesByName(recipeName: string): Promise<Recipe[]> {
+        try {
+            const dtos = await this._recipeDBDatasource.getRecipesByName(recipeName)
+            return dtos.map(this.mapToRecipe)
+        } catch (error) {
+            throw new RecipeRepositoryError(`[getRecipeByName] - ${(error as Error).message}`)
+        }
+    }
+
+    private mapToRecipe = (dto: RecipeDTO): Recipe => {
+        const ingredients = dto.ingredients.map(
+            i => new Ingredient(i.name, `${i.amount}${i.unit ? ' ' + i.unit : ''}`)
+        )
+
         return new Recipe(
-            recipeId,
-            'Spaghetti Carbonara',
-            '1',
-            '101',
-            [
-                new Ingredient('Spaghetti', '200g'),
-                new Ingredient('Eggs', '4'),
-                new Ingredient('Pancetta', '100g'),
-                new Ingredient('Parmesan cheese', '50g'),
-                new Ingredient('Black pepper', 'to taste')
-            ],
-            [
-                'Boil the spaghetti.',
-                'Fry the pancetta.',
-                'Mix eggs and cheese.',
-                'Combine all ingredients.'
-            ],
-            new Date(),
-            'carbonara.jpg',
-            4,
-            '30 minutes',
-            'A classic Italian pasta dish.'
+            dto.id,
+            dto.title,
+            dto.createdBy,
+            dto.cookbookId,
+            ingredients,
+            dto.steps,
+            new Date(dto.createdAt),
+            dto.image,
+            dto.portions,
+            dto.preparationTime,
+            dto.specialNote
         )
     }
 
-    async getRecipeByName(recipeName: string): Promise<Recipe> {
-        return new Recipe(
-            '1',
-            recipeName,
-            '1',
-            '101',
-            [
-                new Ingredient('Spaghetti', '200g'),
-                new Ingredient('Eggs', '4'),
-                new Ingredient('Pancetta', '100g'),
-                new Ingredient('Parmesan cheese', '50g'),
-                new Ingredient('Black pepper', 'to taste')
-            ],
-            [
-                'Boil the spaghetti.',
-                'Fry the pancetta.',
-                'Mix eggs and cheese.',
-                'Combine all ingredients.'
-            ],
-            new Date(),
-            'carbonara.jpg',
-            4,
-            '30 minutes',
-            'A classic Italian pasta dish.'
-        )
+    private mapToDTO(recipe: Recipe): RecipeDTO {
+        return {
+            id: recipe.id,
+            title: recipe.title,
+            createdBy: recipe.createdBy,
+            cookbookId: recipe.cookbookId,
+            ingredients: recipe.ingredients.map(i => {
+                const match = i.quantity.match(/^(\d+\.?\d*)\s*(.*)$/)
+                const amount = match ? parseFloat(match[1]) : 0
+                const unit = match && match[2] ? match[2] : ''
+                return { name: i.name, amount, unit }
+            }),
+            steps: recipe.steps,
+            createdAt: recipe.createdAt.toISOString(),
+            image: recipe.image,
+            portions: recipe.portions,
+            preparationTime: recipe.preparationTime,
+            specialNote: recipe.specialNote
+        }
     }
 }

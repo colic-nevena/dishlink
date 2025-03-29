@@ -1,4 +1,4 @@
-import IUserRepository from "../../persistance/repositories/user/IUserRepository";
+import IUserRepository from "../../fake-api/repositories/UserRepository";
 import Query from "./Query";
 
 export type GetUserByIdRequest = {
@@ -18,7 +18,7 @@ export default class GetUserById implements Query<GetUserByIdResponse> {
     ) { }
 
     async execute(): Promise<GetUserByIdResponse> {
-        const user = await this._userRepo.find(this._request.id)
+        const user = await this._userRepo.getUser(this._request.id)
 
         return {
             id: user.id,

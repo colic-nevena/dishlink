@@ -1,31 +1,40 @@
-import ICookbookRepository from "../../fake-api/repositories/CookbookRepository"
+import { ICookbookRepository } from "../../fake-api/repositories/CookbookRepository"
+import { IRecipeRepository } from "../../fake-api/repositories/RecipeRepository"
 import Cookbook from "./Cookbook"
 import Recipe from "./Recipe"
 
 export default class CookbookContext {
-    constructor(private readonly _cookbookRepository: ICookbookRepository) { }
+    constructor(
+        private readonly _cookbookRepository: ICookbookRepository,
+        private readonly _recipeRepository: IRecipeRepository
+    ) { }
 
-    createCookbook(cookbook: Cookbook) {
-        return this._cookbookRepository.createCookbook(cookbook)
+    async createCookbook(cookbook: Cookbook) {
+        return this._cookbookRepository.save(cookbook)
     }
 
-    changeCookbookName(userId: string, cookbookId: string, newName: string) {
-        // return this._cookbookRepository.changeCookbookName(userId, cookbookId, newName)
+    async changeCookbookName(cookbookId: string, newName: string) {
+        const cookbook = await this._cookbookRepository.get(cookbookId)
+        cookbook.changeName(newName)
+
+        if (!cookbook.hasChanged.name) return
+        return this._cookbookRepository.save(cookbook)
     }
 
-    addRecipeToCookbook(cookbookId: string, recipe: Recipe) {
-        // return this._cookbookRepository.addRecipeToCookbook(cookbookId, recipe)
+    async deleteCookbook(cookbookId: string) {
+        return this._cookbookRepository.delete(cookbookId)
     }
 
-    removeRecipeFromCookbook(cookbookId: string, recipeId: string) {
-        // return this._cookbookRepository.removeRecipeFromCookbook(cookbookId, recipeId)
+    // TODO suri: da li je ovome (i naredne 2 fje) mesto ovde ili treba da ima svoj context ???
+    // da li recept moze da postoji samostalno?
+    // ako mi treba samo za search svih recepata i dodavanje u razne tudje cookbookove, da li to znaci da moze da postoji samostalno?
+    // e sad u kom kontekstu mu je mesto?
+
+    async saveRecipe(recipe: Recipe) {
+        await this._recipeRepository.save(recipe)
     }
 
-    deleteCookbook(cookbookId: string) {
-        // return this._cookbookRepository.deleteCookbook(cookbookId)
-    }
-
-    updateRecipeInCookbook(cookbookId: string, recipeId: string, recipe: Recipe) {
-        // return this._cookbookRepository.updateRecipeInCookbook(cookbookId, recipeId, recipe)
+    async removeRecipe(recipeId: string) {
+        return this._recipeRepository.delete(recipeId)
     }
 }

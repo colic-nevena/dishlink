@@ -1,5 +1,5 @@
 import UUID from "../../app/helper/Uuid";
-import IUserRepository from "../../persistance/repositories/user/IUserRepository";
+import IUserRepository from "../../fake-api/repositories/UserRepository";
 import User, { UserDTO } from "./User";
 
 class UserContextError extends Error {
@@ -22,7 +22,7 @@ export default class UserContext {
 
     async getUser(id: string): Promise<User> {
         try {
-            return await this._userRepository.find(id)
+            return await this._userRepository.getUser(id)
         } catch (error) {
             throw new UserContextError("[getUser]" + (error as Error).message)
         }
@@ -30,7 +30,7 @@ export default class UserContext {
 
     async getUserByEmail(email: string): Promise<User> {
         try {
-            return await this._userRepository.findByEmail(email)
+            return await this._userRepository.getUserByEmail(email)
         } catch (error) {
             throw new UserContextError("[getUserByEmail]" + (error as Error).message)
         }
@@ -38,10 +38,10 @@ export default class UserContext {
 
     async friend(userId: string, friendId: string): Promise<void> {
         try {
-            const user = await this._userRepository.find(userId)
-            const friend = await this._userRepository.find(friendId)
+            const user = await this._userRepository.getUser(userId)
+            const friend = await this._userRepository.getUser(friendId)
 
-            // user.friend(friend)
+            user.addFriend(friend.id)
             await this._userRepository.save(user)
         } catch (error) {
             throw new UserContextError("[friend]" + (error as Error).message)
@@ -50,10 +50,10 @@ export default class UserContext {
 
     async unfriend(userId: string, friendId: string): Promise<void> {
         try {
-            const user = await this._userRepository.find(userId)
-            const friend = await this._userRepository.find(friendId)
+            const user = await this._userRepository.getUser(userId)
+            const friend = await this._userRepository.getUser(friendId)
 
-            // user.unfriend(friend)
+            user.removeFriend(friend.id)
             await this._userRepository.save(user)
         } catch (error) {
             throw new UserContextError("[unfriend]" + (error as Error).message)

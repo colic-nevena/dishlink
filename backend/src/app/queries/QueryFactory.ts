@@ -1,4 +1,4 @@
-import IUserRepository from "../../persistance/repositories/user/IUserRepository";
+import IUserRepository from "../../fake-api/repositories/UserRepository";
 import GetUserById, { GetUserByIdRequest } from "./GetUserById";
 
 export default class QueryFactory {

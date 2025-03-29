@@ -1,6 +1,8 @@
 import ContextContainer from "../domain/ContextContainer"
+import { ICookbookRepository } from "../fake-api/repositories/CookbookRepository"
+import { IRecipeRepository } from "../fake-api/repositories/RecipeRepository"
+import IUserRepository from "../fake-api/repositories/UserRepository"
 import FirebaseAuthDataSource from "../persistance/datasources/auth/FirebaseAuthDataSource"
-import IUserRepository from "../persistance/repositories/user/IUserRepository"
 import CommandFactory from "./commands/CommandFactory"
 import Config from "./Config"
 import AuthController from "./controller/AuthController"
@@ -20,6 +22,8 @@ export default class App {
     private _httpServer!: HttpServer
 
     private readonly _userRepository: IUserRepository
+    private readonly _cookbookRepository: ICookbookRepository
+    private readonly _recipeRepository: IRecipeRepository
 
     private readonly _context: ContextContainer
 
@@ -30,8 +34,10 @@ export default class App {
         this._createHttpServer()
 
         this._userRepository = {} as IUserRepository // TODO
+        this._cookbookRepository = {} as ICookbookRepository // TODO
+        this._recipeRepository = {} as IRecipeRepository // TODO
 
-        this._context = new ContextContainer(this._userRepository)
+        this._context = new ContextContainer(this._userRepository, this._cookbookRepository, this._recipeRepository)
 
         this._commandFactory = new CommandFactory(this._context)
         this._queryFactory = new QueryFactory(this._userRepository) // TODO: or even better, a repo factory

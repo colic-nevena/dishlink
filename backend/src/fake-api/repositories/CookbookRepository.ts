@@ -1,28 +1,78 @@
 import Cookbook from "../../domain/cookbook/Cookbook"
+import User from "../../domain/user/User"
+import { CookbookDTO, ICookbookDBDatasource } from "../datasources/CookbookDBDatasource"
+
+class CookbookRepositoryError extends Error {
+    constructor(message: string) {
+        super(`[CookbookRepository] Error: ${message}`)
+    }
+}
 
 export interface ICookbookRepository {
-    getUserCookbooks(userId: string): Promise<Cookbook[]>
-    getUserCookbookDetail(userId: string, cookbookId: string): Promise<Cookbook>
+    get(id: Cookbook["id"]): Promise<Cookbook>
+    getCookbooksCreatedBy(userId: User["id"]): Promise<Cookbook[]>
+    getCookbookDetails(cookbookId: Cookbook["id"]): Promise<Cookbook>
 
-    createCookbook(cookbook: Cookbook): Promise<Cookbook>
+    save(cookbook: Cookbook): Promise<void>
+    delete(cookbookId: Cookbook["id"]): Promise<void>
 }
 
 export default class CookbookRepository implements ICookbookRepository {
-    async getUserCookbooks(userId: string): Promise<Cookbook[]> {
-        return [
-            new Cookbook('101', 'Italian Favorites', userId, new Date()),
-            new Cookbook('102', 'Mexican Favorites', userId, new Date()),
-            new Cookbook('103', 'Chinese Favorites', userId, new Date())
-        ]
+    constructor(private readonly _cookbookDBDatasource: ICookbookDBDatasource) { }
+
+    async delete(cookbookId: Cookbook["id"]): Promise<void> {
+        try {
+            const exists = await this._cookbookDBDatasource.get(cookbookId)
+            if (!exists) throw new Error("Cookbook does not exist")
+
+            return this._cookbookDBDatasource.delete(cookbookId)
+        } catch (error) {
+            throw new CookbookRepositoryError(`[delete] - ${(error as Error).message}`)
+
+        }
     }
 
-    async getUserCookbookDetail(userId: string, cookbookId: string): Promise<Cookbook> {
-        return new Cookbook(cookbookId, 'Italian Favorites', userId, new Date())
+    async get(id: Cookbook["id"]): Promise<Cookbook> {
+        try {
+            const dto = await this._cookbookDBDatasource.get(id)
+            return this.mapToCookbook(dto)
+        } catch (error) {
+            throw new CookbookRepositoryError(`[get] - ${(error as Error).message}`)
+        }
     }
 
+    async getCookbooksCreatedBy(userId: string): Promise<Cookbook[]> {
+        try {
+            const dtos = await this._cookbookDBDatasource.getCookbooksCreatedBy(userId)
+            return dtos.map(this.mapToCookbook)
+        } catch (error) {
+            throw new CookbookRepositoryError(`[getCookbooksCreatedBy] - ${(error as Error).message}`)
+        }
+    }
 
-    async createCookbook(cookbook: Cookbook): Promise<Cookbook> {
-        console.log("Creating cookbook... Updating db table cookbooks")
-        return cookbook
+    async getCookbookDetails(cookbookId: string): Promise<Cookbook> {
+        try {
+            const dto = await this._cookbookDBDatasource.getCookbookDetails(cookbookId)
+            return this.mapToCookbook(dto)
+        } catch (error) {
+            throw new CookbookRepositoryError(`[getCookbookDetails] - ${(error as Error).message}`)
+        }
+    }
+
+    async save(cookbook: Cookbook): Promise<void> {
+        try {
+            const exists = await this._cookbookDBDatasource.get(cookbook.id)
+            if (!exists) {
+                this._cookbookDBDatasource.save(cookbook)
+            } else {
+                this._cookbookDBDatasource.update(cookbook)
+            }
+        } catch (error) {
+            throw new CookbookRepositoryError(`[createCookbook] - ${(error as Error).message}`)
+        }
+    }
+
+    private mapToCookbook(dto: CookbookDTO): Cookbook {
+        return new Cookbook(dto.id, dto.name, dto.createdBy, new Date(dto.createdAt))
     }
 }
