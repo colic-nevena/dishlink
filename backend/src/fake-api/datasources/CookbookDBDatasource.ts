@@ -8,9 +8,8 @@ export type CookbookDTO = {
 }
 
 export interface ICookbookDBDatasource {
-    get(id: Cookbook["id"]): Promise<CookbookDTO>
+    getCookbook(id: Cookbook["id"]): Promise<CookbookDTO>
     getCookbooksCreatedBy(userId: string): Promise<CookbookDTO[]>
-    getCookbookDetails(cookbookId: string): Promise<CookbookDTO>
 
     save(cookbook: Cookbook): Promise<void>
     update(cookbook: Cookbook): Promise<void>
@@ -26,7 +25,7 @@ export default class CookbookDBDatasource implements ICookbookDBDatasource {
         }
     }
 
-    async get(id: string): Promise<CookbookDTO> {
+    async getCookbook(id: string): Promise<CookbookDTO> {
         try {
             return {
                 id,
@@ -50,19 +49,6 @@ export default class CookbookDBDatasource implements ICookbookDBDatasource {
     async update(cookbook: Cookbook): Promise<void> {
         try {
             console.log("Updating cookbook... Updating db table cookbooks")
-        } catch (error) {
-            throw new Error(`Error - ${(error as Error).message}`)
-        }
-    }
-
-    async getCookbookDetails(cookbookId: string): Promise<CookbookDTO> {
-        try {
-            return {
-                id: cookbookId,
-                name: 'Italian Favorites',
-                createdBy: "user123",
-                createdAt: new Date().toISOString()
-            }
         } catch (error) {
             throw new Error(`Error - ${(error as Error).message}`)
         }

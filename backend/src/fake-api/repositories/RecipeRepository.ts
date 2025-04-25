@@ -13,7 +13,7 @@ export interface IRecipeRepository {
     getLatestRecipesCreatedBy(userId: string): Promise<Recipe[]>
     getAllCookbookRecipes(cookbookId: string): Promise<Recipe[]>
     getRecipesLikedBy(userId: string): Promise<Recipe[]>
-    getRecipeById(recipeId: string): Promise<Recipe>
+    getRecipe(recipeId: string): Promise<Recipe>
     getRecipesByName(recipeName: string): Promise<Recipe[]>
 
     save(recipe: Recipe): Promise<void>
@@ -85,7 +85,7 @@ export default class RecipeRepository implements IRecipeRepository {
         }
     }
 
-    async getRecipeById(recipeId: string): Promise<Recipe> {
+    async getRecipe(recipeId: string): Promise<Recipe> {
         try {
             const dto = await this._recipeDBDatasource.getRecipeById(recipeId)
             return this.mapToRecipe(dto)

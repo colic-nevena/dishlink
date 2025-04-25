@@ -5,7 +5,6 @@ export default interface IUserRepository {
     getUser(userId: string): Promise<User>
     getUserByName(name: string): Promise<User>
     getUserByEmail(email: string): Promise<User>
-    getUserProfile(userId: string): Promise<User>
     getFriendsFor(userId: string): Promise<User[]>
 
     save(user: User): Promise<void>
@@ -45,15 +44,6 @@ export default class UserRepository implements IUserRepository {
             return this.mapToUser(dto)
         } catch (error) {
             throw new UserRepositoryError(`[getByEmail] - ${(error as Error).message}`)
-        }
-    }
-
-    async getUserProfile(userId: string): Promise<User> {
-        try {
-            const dto = await this._userDBDatasource.getUserProfile(userId)
-            return this.mapToUser(dto)
-        } catch (error) {
-            throw new UserRepositoryError(`[getProfile] - ${(error as Error).message}`)
         }
     }
 

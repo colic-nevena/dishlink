@@ -25,11 +25,6 @@ export default class CookbookContext {
         return this._cookbookRepository.delete(cookbookId)
     }
 
-    // TODO suri: da li je ovome (i naredne 2 fje) mesto ovde ili treba da ima svoj context ???
-    // da li recept moze da postoji samostalno?
-    // ako mi treba samo za search svih recepata i dodavanje u razne tudje cookbookove, da li to znaci da moze da postoji samostalno?
-    // e sad u kom kontekstu mu je mesto?
-
     async saveRecipe(recipe: Recipe) {
         await this._recipeRepository.save(recipe)
     }

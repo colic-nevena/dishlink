@@ -11,7 +11,6 @@ export interface IUserDBDatasource {
     getUser(userId: string): Promise<UserDTO>
     getUserByName(name: string): Promise<UserDTO>
     getUserByEmail(email: string): Promise<UserDTO>
-    getUserProfile(userId: string): Promise<UserDTO>
     getFriendsFor(userId: string): Promise<UserDTO[]>
 
     save(user: User): Promise<void>
@@ -55,19 +54,6 @@ export default class UserDBDatasource implements IUserDBDatasource {
             }
         } catch (error) {
             throw new Error(`[getByEmail] - ${(error as Error).message}`)
-        }
-    }
-
-    async getUserProfile(userId: string): Promise<UserDTO> {
-        try {
-            return {
-                id: userId,
-                name: "John Doe",
-                email: "john.doe@example.com",
-                friends: ["2", "3"]
-            }
-        } catch (error) {
-            throw new Error(`[getProfile] - ${(error as Error).message}`)
         }
     }
 

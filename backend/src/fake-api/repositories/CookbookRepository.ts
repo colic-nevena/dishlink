@@ -22,19 +22,18 @@ export default class CookbookRepository implements ICookbookRepository {
 
     async delete(cookbookId: Cookbook["id"]): Promise<void> {
         try {
-            const exists = await this._cookbookDBDatasource.get(cookbookId)
+            const exists = await this._cookbookDBDatasource.getCookbook(cookbookId)
             if (!exists) throw new Error("Cookbook does not exist")
 
             return this._cookbookDBDatasource.delete(cookbookId)
         } catch (error) {
             throw new CookbookRepositoryError(`[delete] - ${(error as Error).message}`)
-
         }
     }
 
     async get(id: Cookbook["id"]): Promise<Cookbook> {
         try {
-            const dto = await this._cookbookDBDatasource.get(id)
+            const dto = await this._cookbookDBDatasource.getCookbook(id)
             return this.mapToCookbook(dto)
         } catch (error) {
             throw new CookbookRepositoryError(`[get] - ${(error as Error).message}`)
@@ -52,7 +51,7 @@ export default class CookbookRepository implements ICookbookRepository {
 
     async getCookbookDetails(cookbookId: string): Promise<Cookbook> {
         try {
-            const dto = await this._cookbookDBDatasource.getCookbookDetails(cookbookId)
+            const dto = await this._cookbookDBDatasource.getCookbook(cookbookId)
             return this.mapToCookbook(dto)
         } catch (error) {
             throw new CookbookRepositoryError(`[getCookbookDetails] - ${(error as Error).message}`)
@@ -61,7 +60,7 @@ export default class CookbookRepository implements ICookbookRepository {
 
     async save(cookbook: Cookbook): Promise<void> {
         try {
-            const exists = await this._cookbookDBDatasource.get(cookbook.id)
+            const exists = await this._cookbookDBDatasource.getCookbook(cookbook.id)
             if (!exists) {
                 this._cookbookDBDatasource.save(cookbook)
             } else {
